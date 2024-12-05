@@ -2,65 +2,79 @@
 #include <iomanip>
 #include <fstream>
 using namespace std;
+struct teacher
+{
+    string name;
+    string userName;
+    string Password;
+    int tClass;
+    int age;
+};
+struct student
+{
+    string name;
+    string userName;
+    string Password;
+    int sClass;
+    int rollNo;
+    char grade;
+};
 //  Managing Teacher  (Administrator)
-void AddTeacher(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[]);
-void DeleteTeacher(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[]);
-void UpdateTeacher(string tName[], int tClass[], int tAge[]);
-void DisplayTeacher(string tName[], int tClass[], int tAge[]);
-void SearchTeacher(string tName[], int tClass[], int tAge[]);
-void DisplayTeacherId(string tName[], string tUserName[], string tPassword[]);
+void AddTeacher(teacher Teacher[]);
+void DeleteTeacher(teacher Teacher[]);
+void UpdateTeacher(teacher Teacher[]);
+void DisplayTeacher(teacher Teacher[]);
+void SearchTeacher(teacher Teacher[]);
+void DisplayTeacherId(teacher Teacher[]);
 //Managing Student  (Administrator)
-void AddStudent(string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[]);
-void DeleteStudent(string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[]);
-void UpdateStudent(string sName[], int sClass[], int sRollNo[]);
-void DisplayStudent(string sName[], int sClass[], int sRollNo[]);
-void SearchStudent(string sName[], int sClass[], int sRollNo[]);
-void DisplayStudentId(string sName[], string sUserName[],string sPassword[]);
+void AddStudent(student Student[]);
+void DeleteStudent(student Student[]);
+void UpdateStudent(student Student[]);
+void DisplayStudent(student Student[]);
+void SearchStudent(student Student[]);
+void DisplayStudentId(student Student[]);
 // Teacher Login
-void AddMarksOfStudent(string sName[], int marks[][5], int sclass[], int classcheck);
-void AddStudentsGrade(string sName[], char grade[], int sClass[], int classCheck);
-void ViewStudentsWithGrade(string sName[], char grade[], int sRollNo[],int sClass[], int classCheck);
-void ViewStudentsWithMarks(string sName[],int marks[][5],int sClass[],int classcheck);
-void SearchStudentsWithMarks(string sName[],int marks[][5],int sClass[],int sRollNo[],int classcheck);
+void AddMarksOfStudent(student Student[], int marks[][5], int classcheck);
+void AddStudentsGrade(student Student[], int classCheck);
+void ViewStudentsWithGrade(student Student[], int classCheck);
+void ViewStudentsWithMarks(student Student[],int marks[][5],int classcheck);
+void SearchStudentsWithMarks(student Student[],int marks[][5],int classcheck);
 //Student Login
-void ViewGradeByStudent(string sName[], char grade[], int sRollNo[], int rollNoCheck);
-void ViewMarksByStudent(int marks[][5], string sName[], int sRollNo[], int rollNoCheck);
+void ViewGradeByStudent(student Student[], int rollNoCheck);
+void ViewMarksByStudent(student Student[],int marks[][5], int rollNoCheck);
 //validations
-void SaveData(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[], string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[],int marks[][5],char grades[]);
-void loadData(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[], string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[],int marks[][5],char grades[]);
-int AgeRestriction(int tAge);
+void SaveData(teacher Teacher[] , student Student[],int marks[][5]);
+void loadData(teacher Teacher[], student Student[],int marks[][5]);
+int AgeRestriction(int age);
 int valid(int input);
 int classRestriction(int validClass);
-int RollNoRestriction(int sRollNo);
+int RollNoRestriction(int rollNo);
 int main()
 {
-
-    const int tSize = 5;
     const int studentSize = 10;
+    const int tSize = 5;
+    teacher Teacher[tSize];
+    student Student[studentSize];
     string names, userName, passWord, search;
-    char grades[studentSize];
     int marks[studentSize][tSize];
-    string tUserName[tSize], teacher[tSize], tPassword[tSize];
-    string students[studentSize], sUserName[studentSize], sPassword[studentSize];
-    int input, input1, input2, loggedInUserType, teacherClass[tSize], teacherSAge[tSize], studentRollNo[studentSize];
-    int classs, studentClass[studentSize], rollNos;
+    int input, input1, input2, loggedInUserType;
+    int classs, rollNos;
 
     for (int i = 0; i < tSize; i++)
     {
-        teacher[i] = "nv";
-        teacherSAge[i] = -1;
-        teacherClass[i] = -1;
-        tUserName[i] = "nv";
-        tPassword[i] = "nv";
+        Teacher[i].name = "nv";
+        Teacher[i].age = -1;
+        Teacher[i].userName = "nv";
+        Teacher[i].tClass = -1;
+        Teacher[i].Password = "nv";
     }
     for (int i = 0; i < studentSize; i++)
     {
-        students[i] = "nv";
-        studentClass[i] = -2;
-        studentRollNo[i] = -1;
-        grades[i] = ' ';
-        sUserName[i] = "nv";
-        sPassword[i] = "nv";
+        Student[i].name = "nv";
+        Student[i].rollNo = -1;
+        Student[i].userName = "nv";
+        Student[i].sClass = -2;
+        Student[i].Password = "nv";
     }
     for (int i = 0; i < studentSize; i++)
     {
@@ -69,7 +83,7 @@ int main()
             marks[i][j] = 0;
         }
     }
-    loadData(teacher , tUserName , teacherClass , teacherSAge , tPassword , students ,sUserName ,studentClass , studentRollNo , sPassword , marks , grades);
+    loadData(Teacher,Student,marks);
     cout << "***************************************************************************************" << endl;
     cout << setw(60) << "School Management System " << endl;
     cout << "***************************************************************************************" << endl;
@@ -113,7 +127,7 @@ int main()
             cin >> classs;
             for (int i = 0; i < tSize; i++)
             {
-                if (userName == tUserName[i] && passWord == tPassword[i] && classs == teacherClass[i])
+                if (userName == Teacher[i].userName && passWord == Teacher[i].Password && classs == Teacher[i].tClass)
                 {
                     loggedInUserType = 2;
                     break;
@@ -135,7 +149,7 @@ int main()
             cin >> rollNos;
             for (int i = 0; i < tSize; i++)
             {
-                if (userName == sUserName[i] && passWord == sPassword[i] && rollNos == studentRollNo[i])
+                if (userName == Student[i].userName && passWord == Student[i].Password && rollNos == Student[i].rollNo)
                 {
                     loggedInUserType = 3;
                     break;
@@ -195,31 +209,31 @@ int main()
 
                         if (input1 == 1)
                         {
-                            AddTeacher(teacher, tUserName, teacherClass, teacherSAge, tPassword);
+                            AddTeacher(Teacher);
                         }
 
                         else if (input1 == 2)
                         {
-                            DeleteTeacher(teacher, tUserName, teacherClass, teacherSAge, tPassword);
+                            DeleteTeacher(Teacher);
                         }
 
                         else if (input1 == 3)
                         {
-                            UpdateTeacher(teacher, teacherClass, teacherSAge);
+                            UpdateTeacher(Teacher);
                         }
 
                         else if (input1 == 4)
                         {
-                            DisplayTeacher(teacher, teacherClass, teacherSAge);
+                            DisplayTeacher(Teacher);
                         }
 
                         else if (input1 == 5)
                         {
-                            SearchTeacher(teacher, teacherClass, teacherSAge);
+                            SearchTeacher(Teacher);
                         }
                         else if (input1 == 6)
                         {
-                            DisplayTeacherId(teacher, tUserName, tPassword);
+                            DisplayTeacherId(Teacher);
                         }
                     } while (input1 != 0);
                 }
@@ -243,29 +257,29 @@ int main()
 
                         if (input1 == 1)
                         {
-                            AddStudent(students, sUserName, studentClass, studentRollNo, sPassword);
+                            AddStudent(Student);
                         }
 
                         else if (input1 == 2)
                         {
-                            DeleteStudent(students, sUserName, studentClass, studentRollNo, sPassword);
+                            DeleteStudent(Student);
                         }
 
                         else if (input1 == 3)
                         {
-                            UpdateStudent(students, studentClass, studentRollNo);
+                            UpdateStudent(Student);
                         }
                         else if (input1 == 4)
                         {
-                            DisplayStudent(students, studentClass, studentRollNo);
+                            DisplayStudent(Student);
                         }
                         else if (input1 == 5)
                         {
-                            SearchStudent(students, studentClass, studentRollNo);
+                            SearchStudent(Student);
                         }
                         else if (input1 == 6)
                         {
-                            DisplayStudentId(students, sUserName, sPassword);
+                            DisplayStudentId(Student);
                         }
                     } while (input1 != 0);
                 }
@@ -299,25 +313,25 @@ int main()
 
                 if (input1 == 1)
                 {
-                    AddMarksOfStudent(students, marks, studentClass, classs);
+                    AddMarksOfStudent(Student, marks, classs);
                 }
 
                 else if (input1 == 3)
                 {
-                    ViewStudentsWithGrade(students, grades, studentRollNo, studentClass, classs);
+                    ViewStudentsWithGrade(Student, classs);
                 }
 
                 else if (input1 == 2)
                 {
-                    AddStudentsGrade(students, grades, studentClass, classs);
+                    AddStudentsGrade(Student, classs);
                 }
                 else if (input1 == 4)
                 {
-                    ViewStudentsWithMarks(students,marks,studentClass,classs);
+                    ViewStudentsWithMarks(Student,marks,classs);
                 }
                 else if(input1 == 5)
                 {
-                    SearchStudentsWithMarks(students,marks,studentClass,studentRollNo,classs);
+                    SearchStudentsWithMarks(Student,marks,classs);
                 }
 
             } while (input1 != 0);
@@ -340,18 +354,18 @@ int main()
                 {
                     if (input1 == 1)
                     {
-                        ViewMarksByStudent(marks,students,studentRollNo,rollNos);                        
+                        ViewMarksByStudent(Student,marks,rollNos);                        
                     }
                     else if (input1 == 2)
                     {
-                        ViewGradeByStudent(students, grades, studentRollNo,rollNos);
+                        ViewGradeByStudent(Student,rollNos);
                     }
                 }
             } while (input1 != 0);
         }
 
     } while (input != 0);
-    SaveData(teacher, tUserName, teacherClass, teacherSAge, tPassword, students, sUserName, studentClass, studentRollNo, sPassword,marks,grades);
+    SaveData(Teacher,Student,marks);
 }
 
 int valid(int input)
@@ -370,32 +384,32 @@ int valid(int input)
     return input;
 }
 //  ADD teacher
-void AddTeacher(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[])
+void AddTeacher(teacher Teacher[])
 {
     string add, username;
     int age, classss;
     bool teacherFlag = false;
     for (int i = 0; i < 5; i++)
     {
-        if (tName[i] == "nv")
+        if (Teacher[i].name == "nv")
         {
             cout << "Enter teacher's name : ";
             cin.ignore(256, '\n');
             getline(cin, add);
-            tName[i] = add;
+            Teacher[i].name = add;
             cout << "Enter teacher's Age(Between 20 and 60) : ";
             cin >> age;
             age = AgeRestriction(age);
-            tAge[i] = age;
+            Teacher[i].age = age;
             cout << "Assign Class to teacher(Between 1 and 10) : ";
             cin >> classss;
             classss = classRestriction(classss);
-            tClass[i] = classss;
+            Teacher[i].tClass = classss;
             cout << "Generate username for teacher : ";
             cin.ignore(256, '\n');
-            getline(cin, tUserName[i]);
+            getline(cin, Teacher[i].userName);
             cout << "Generate password for teacher : ";
-            cin >> tPassword[i];
+            cin >> Teacher[i].Password;
             cout << "Teacher Add Succefully." << endl;
             teacherFlag = true;
             break;
@@ -408,7 +422,7 @@ void AddTeacher(string tName[], string tUserName[], int tClass[], int tAge[], st
 
 }
 // Delete Teacher
-void DeleteTeacher(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[])
+void DeleteTeacher(teacher Teacher[])
 {
     string dele;
     cout << "Enter teacher's name to delete : ";
@@ -417,14 +431,14 @@ void DeleteTeacher(string tName[], string tUserName[], int tClass[], int tAge[],
     bool teacherFlag = false;
     for (int i = 0; i < 5; i++)
     {
-        if (tName[i] != "nv" && dele == tName[i])
+        if (Teacher[i].name != "nv" && dele == Teacher[i].name)
         {
 
-            tName[i] = "nv";
-            tClass[i] = -1;
-            tAge[i] = -1;
-            tUserName[i] = "nv";
-            tPassword[i] = "nv";
+            Teacher[i].name = "nv";
+            Teacher[i].tClass = -1;
+            Teacher[i].age = -1;
+            Teacher[i].userName = "nv";
+            Teacher[i].Password = "nv";
             cout << "Teacher Delete Succefully." << endl;
             teacherFlag = true;
             break;
@@ -436,7 +450,7 @@ void DeleteTeacher(string tName[], string tUserName[], int tClass[], int tAge[],
     }
 }
 
-void UpdateTeacher(string tName[], int tClass[], int tAge[])
+void UpdateTeacher(teacher Teacher[])
 {
     bool teacherFlag = false;
     string update;
@@ -446,7 +460,7 @@ void UpdateTeacher(string tName[], int tClass[], int tAge[])
     getline(cin, update);
     for (int i = 0; i < 5; i++)
     {
-        if (tName[i] != "nv" && update == tName[i])
+        if (Teacher[i].name != "nv" && update == Teacher[i].name)
         {
             cout << "What do you want to change : " << endl;
             cout << setw(45) << "1.Teacher's name " << endl;
@@ -458,29 +472,29 @@ void UpdateTeacher(string tName[], int tClass[], int tAge[])
             {
                 if (choose == 1)
                 {
-                    cout << "Update name of " << tName[i] << " : ";
+                    cout << "Update name of " << Teacher[i].name << " : ";
                     cin.ignore(256, '\n');
-                    getline(cin, tName[i]);
+                    getline(cin, Teacher[i].name);
                     cout << "Teacher's name has been succefully updated." << endl;
                     teacherFlag =true;
                     break;
                 }
                 else if (choose == 2)
                 {
-                    cout << "Update class of " << tName[i] << " : ";
+                    cout << "Update class of " << Teacher[i].name << " : ";
                     cin >> classss;
                     classss = classRestriction(classss);
-                    tClass[i] = classss;
+                    Teacher[i].tClass = classss;
                     cout << "Teacher's class has been succefully updated." << endl;
                     teacherFlag =true;
                     break;
                 }
                 else if (choose == 3)
                 {
-                    cout << "Update age of " << tName[i] << " : ";
+                    cout << "Update age of " << Teacher[i].name << " : ";
                     cin >> age;
                     age = AgeRestriction(age);
-                    tAge[i] = age;
+                    Teacher[i].age = age;
                     cout << "Teacher's age has been succefully updated." << endl;
                     teacherFlag =true;
                     break;
@@ -494,7 +508,7 @@ void UpdateTeacher(string tName[], int tClass[], int tAge[])
     }
 }
 
-void DisplayTeacher(string tName[],int tClass[], int tAge[])
+void DisplayTeacher(teacher Teacher[])
 {
     bool teacherFlag = false;
     cout << setw(30) << " Teacher " << setw(35);
@@ -502,10 +516,10 @@ void DisplayTeacher(string tName[],int tClass[], int tAge[])
     cout << "*********************************************************************************" << endl;
     for (int i = 0; i < 5; i++)
     {
-        if (tName[i] != "nv" && tClass[i] != -1 && tAge[i] != -1)
+        if (Teacher[i].name != "nv" && Teacher[i].tClass != -1 && Teacher[i].age != -1)
         {
-            cout << setw(28) << tName[i] << setw(32);
-            cout << tClass[i] << setw(24) << tAge[i] << endl;
+            cout << setw(28) << Teacher[i].name << setw(32);
+            cout << Teacher[i].tClass << setw(24) << Teacher[i].age << endl;
             teacherFlag = true;
         }
     }
@@ -515,7 +529,7 @@ void DisplayTeacher(string tName[],int tClass[], int tAge[])
     }
 }
 
-void SearchTeacher(string tName[],int tClass[], int tAge[])
+void SearchTeacher(teacher Teacher[])
 {
     bool teacherFlag = false;
     int choose, searching;
@@ -540,10 +554,10 @@ void SearchTeacher(string tName[],int tClass[], int tAge[])
             cout << "*********************************************************************************" << endl;
             for (int i = 0; i < 5; i++)
             {
-                if (tName[i] != "nv" && tName[i] == search)
+                if (Teacher[i].name != "nv" && Teacher[i].name == search)
                 {
-                    cout << setw(28) << tName[i] << setw(32);
-                    cout << tClass[i] << setw(24) << tAge[i] << endl;
+                    cout << setw(28) << Teacher[i].name << setw(32);
+                    cout << Teacher[i].tClass << setw(24) << Teacher[i].age << endl;
                     teacherFlag = true;
                     break;
                 }
@@ -560,10 +574,10 @@ void SearchTeacher(string tName[],int tClass[], int tAge[])
             cout << "*********************************************************************************" << endl;
             for (int i = 0; i < 5; i++)
             {
-                if (tName[i] != "nv" && tClass[i] == searching)
+                if (Teacher[i].name != "nv" && Teacher[i].tClass == searching)
                 {
-                    cout << setw(28) << tName[i] << setw(32);
-                    cout << tClass[i] << setw(24) << tAge[i] << endl;
+                    cout << setw(28) << Teacher[i].name << setw(32);
+                    cout << Teacher[i].tClass << setw(24) << Teacher[i].age << endl;
                     teacherFlag =true;
                     break;
                 }
@@ -580,10 +594,10 @@ void SearchTeacher(string tName[],int tClass[], int tAge[])
             cout << "*********************************************************************************" << endl;
             for (int i = 0; i < 5; i++)
             {
-                if (tName[i] != "nv" && tAge[i] == searching)
+                if (Teacher[i].name != "nv" && Teacher[i].age == searching)
                 {
-                    cout << setw(28) << tName[i] << setw(32);
-                    cout << tClass[i] << setw(24) << tAge[i] << endl;
+                    cout << setw(28) << Teacher[i].name << setw(32);
+                    cout << Teacher[i].tClass << setw(24) << Teacher[i].age << endl;
                     teacherFlag =true;
                     break;
                 }
@@ -596,7 +610,7 @@ void SearchTeacher(string tName[],int tClass[], int tAge[])
     }
 }
 
-void DisplayTeacherId(string tName[], string tUserName[], string tPassword[])
+void DisplayTeacherId(teacher Teacher[])
 {
     bool teacherFlag = false;
     cout << setw(30) << " Teacher " << setw(35);
@@ -604,10 +618,10 @@ void DisplayTeacherId(string tName[], string tUserName[], string tPassword[])
     cout << "*********************************************************************************" << endl;
     for (int i = 0; i < 5; i++)
     {
-        if (tName[i] != "nv" && tUserName[i] != "nv" && tPassword[i] != "nv")
+        if (Teacher[i].name != "nv" && Teacher[i].userName != "nv" && Teacher[i].Password != "nv")
         {
-            cout << setw(28) << tName[i] << setw(32);
-            cout << tUserName[i] << setw(24) << tPassword[i] << endl;
+            cout << setw(28) << Teacher[i].name << setw(32);
+            cout << Teacher[i].userName << setw(24) << Teacher[i].Password << endl;
             teacherFlag =true;
         }
     }
@@ -616,32 +630,32 @@ void DisplayTeacherId(string tName[], string tUserName[], string tPassword[])
         cout <<"No Teachers were added."<<endl;
     }
 }
-void AddStudent(string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[])
+void AddStudent(student Student[])
 {
     bool studentFlag = false;
     string add;
     int classss, rollNo;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] == "nv")
+        if (Student[i].name == "nv")
         {
             cout << "Enter student's name : ";
             cin.ignore(256, '\n');
             getline(cin, add);
-            sName[i] = add;
+            Student[i].name = add;
             cout << "Enter student's Class : ";
             cin >> classss;
             classss = classRestriction(classss);
-            sClass[i] = classss;
+            Student[i].sClass = classss;
             cout << "Enter student's Roll No : ";
             cin >> rollNo;
             rollNo = RollNoRestriction(rollNo);
-            sRollNo[i] = rollNo;
+            Student[i].rollNo = rollNo;
             cout << "Generate student username : ";
             cin.ignore(256, '\n');
-            getline(cin, sUserName[i]);
+            getline(cin, Student[i].userName);
             cout << "Generate student password : ";
-            cin >> sPassword[i];
+            cin >> Student[i].Password;
             cout << "Student Add Succefully." << endl;
             studentFlag = true;
             break;
@@ -652,7 +666,7 @@ void AddStudent(string sName[], string sUserName[], int sClass[], int sRollNo[],
         cout <<"No more space available."<<endl;
     }
 }
-void DeleteStudent(string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[])
+void DeleteStudent(student Student[])
 {
     bool studentFlag = false;
     string del;
@@ -661,14 +675,14 @@ void DeleteStudent(string sName[], string sUserName[], int sClass[], int sRollNo
     getline(cin, del);
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && del == sName[i])
+        if (Student[i].name != "nv" && del == Student[i].name)
         {
 
-            sName[i] = "nv";
-            sRollNo[i] = -1;
-            sClass[i] = -2;
-            sUserName[i] = "nv";
-            sPassword[i] = "nv";
+            Student[i].name = "nv";
+            Student[i].rollNo = -1;
+            Student[i].sClass = -2;
+            Student[i].userName = "nv";
+            Student[i].Password = "nv";
             cout << "Student Delete Succefully." << endl;
             studentFlag = true;
             break;
@@ -680,7 +694,7 @@ void DeleteStudent(string sName[], string sUserName[], int sClass[], int sRollNo
     }
 }
 // update student
-void UpdateStudent(string sName[],int sClass[], int sRollNo[])
+void UpdateStudent(student Student[])
 {
     bool studentFlag = false;
     string update;
@@ -690,7 +704,7 @@ void UpdateStudent(string sName[],int sClass[], int sRollNo[])
     getline(cin, update);
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && update == sName[i])
+        if (Student[i].name != "nv" && update == Student[i].name)
         {
             cout << "What do you want to change : " << endl;
             cout << setw(45) << "1.Student's name " << endl;
@@ -702,29 +716,29 @@ void UpdateStudent(string sName[],int sClass[], int sRollNo[])
             {
                 if (choose == 1)
                 {
-                    cout << "Update name of " << sName[i] << " : ";
+                    cout << "Update name of " << Student[i].name << " : ";
                     cin.ignore(256, '\n');
-                    getline(cin, sName[i]);
+                    getline(cin, Student[i].name);
                     cout << "Student's name has been succefully updated." << endl;
                     studentFlag = true;
                     break;
                 }
                 else if (choose == 2)
                 {
-                    cout << "Update class of " << sName[i] << " : ";
+                    cout << "Update class of " << Student[i].name << " : ";
                     cin >> classss;
                     classss = classRestriction(classss);
-                    sClass[i] = classss;
+                    Student[i].sClass= classss;
                     cout << "Student's class has been succefully updated." << endl;
                     studentFlag = true;
                     break;
                 }
                 else if (choose == 3)
                 {
-                    cout << "Update roll no of " << sName[i] << " : ";
+                    cout << "Update roll no of " << Student[i].name << " : ";
                     cin >> rollNo;
                     rollNo = RollNoRestriction(rollNo);
-                    sRollNo[i] = rollNo;
+                    Student[i].rollNo = rollNo;
                     cout << "Student's roll no has been succefully updated." << endl;
                     studentFlag = true;
                     break;
@@ -741,7 +755,7 @@ void UpdateStudent(string sName[],int sClass[], int sRollNo[])
         cout <<"No student found."<<endl;
     }
 }
-void DisplayStudent(string sName[],int sClass[], int sRollNo[]) // view students(administrator)
+void DisplayStudent(student Student[]) // view students(administrator)
 {
     bool studentFlag = false;
     cout << setw(30) << " Student " << setw(35);
@@ -749,10 +763,10 @@ void DisplayStudent(string sName[],int sClass[], int sRollNo[]) // view students
     cout << "*********************************************************************************" << endl;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && sClass[i] != -2 && sRollNo[i] != -1)
+        if (Student[i].name != "nv" && Student[i].sClass != -2 && Student[i].rollNo != -1)
         {
-            cout << setw(28) << sName[i] << setw(32);
-            cout << sClass[i] << setw(24) << sRollNo[i] << endl; 
+            cout << setw(28) << Student[i].name << setw(32);
+            cout << Student[i].sClass << setw(24) << Student[i].rollNo << endl; 
             studentFlag = true;
         }
     }
@@ -761,7 +775,7 @@ void DisplayStudent(string sName[],int sClass[], int sRollNo[]) // view students
         cout <<"no students were added to display."<<endl;
     }
 }
-void SearchStudent(string sName[], int sClass[], int sRollNo[]) // search student (administrator)
+void SearchStudent(student Student[]) // search student (administrator)
 {
     bool studentFlag = false;
     int choose, searching;
@@ -786,10 +800,10 @@ void SearchStudent(string sName[], int sClass[], int sRollNo[]) // search studen
             cout << "*********************************************************************************" << endl;
             for (int i = 0; i < 10; i++)
             {
-                if (sName[i] != "nv" && sName[i] == search )
+                if (Student[i].name != "nv" && Student[i].name == search )
                 {
-                    cout << setw(28) << sName[i] << setw(32);
-                    cout << sClass[i] << setw(24) << sRollNo[i] << endl;
+                    cout << setw(28) << Student[i].name << setw(32);
+                    cout << Student[i].sClass << setw(24) << Student[i].rollNo << endl;
                     studentFlag = true;
                     break;
                 }
@@ -806,10 +820,10 @@ void SearchStudent(string sName[], int sClass[], int sRollNo[]) // search studen
             cout << "*********************************************************************************" << endl;
             for (int i = 0; i < 10; i++)
             {
-                if (sName[i] != "nv" && sClass[i] == searching)
+                if (Student[i].name != "nv" && Student[i].sClass == searching)
                 {
-                    cout << setw(28) << sName[i] << setw(32);
-                    cout << sClass[i] << setw(24) << sRollNo[i] << endl;
+                    cout << setw(28) << Student[i].name << setw(32);
+                    cout << Student[i].sClass << setw(24) << Student[i].rollNo << endl;
                     studentFlag = true;
                     break;
                 }
@@ -826,10 +840,10 @@ void SearchStudent(string sName[], int sClass[], int sRollNo[]) // search studen
             cout << "*********************************************************************************" << endl;
             for (int i = 0; i < 10; i++)
             {
-                if (sName[i] != "nv" && sRollNo[i] == searching)
+                if (Student[i].name != "nv" && Student[i].rollNo == searching)
                 {
-                    cout << setw(28) << sName[i] << setw(32);
-                    cout << sClass[i] << setw(24) << sRollNo[i] << endl;
+                    cout << setw(28) << Student[i].name << setw(32);
+                    cout << Student[i].sClass << setw(24) << Student[i].rollNo << endl;
                     studentFlag = true;
                     break;
                 }
@@ -841,7 +855,7 @@ void SearchStudent(string sName[], int sClass[], int sRollNo[]) // search studen
         cout <<"No students found."<<endl;
     }
 }
-void DisplayStudentId(string sName[], string sUserName[],string sPassword[]) // view username and password of studnets(administrator)
+void DisplayStudentId(student Student[]) // view username and password of studnets(administrator)
 {
     bool studentFlag = false;
     cout << setw(30) << " Student " << setw(35);
@@ -849,10 +863,10 @@ void DisplayStudentId(string sName[], string sUserName[],string sPassword[]) // 
     cout << "*********************************************************************************" << endl;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && sUserName[i] != "nv" && sPassword[i] != "nv")
+        if (Student[i].name != "nv" && Student[i].userName != "nv" && Student[i].Password != "nv")
         {
-            cout << setw(28) << sName[i] << setw(32);
-            cout << sUserName[i] << setw(24) << sPassword[i] << endl;
+            cout << setw(28) << Student[i].name << setw(32);
+            cout << Student[i].userName << setw(24) << Student[i].Password << endl;
             studentFlag = true;
         }
     }
@@ -861,7 +875,7 @@ void DisplayStudentId(string sName[], string sUserName[],string sPassword[]) // 
         cout <<"No students were added to displayed."<<endl;
     }
 }
-void ViewStudentsWithGrade(string sName[], char grade[], int sRollNo[],int sClass[], int classCheck) // view student grade (teacher)
+void ViewStudentsWithGrade(student Student[],int classCheck) // view student grade (teacher)
 {
     bool studentFlag = false;
     cout << endl;
@@ -870,10 +884,10 @@ void ViewStudentsWithGrade(string sName[], char grade[], int sRollNo[],int sClas
     cout << "*********************************************************************************" << endl;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && classCheck == sClass[i])
+        if (Student[i].name != "nv" && classCheck == Student[i].sClass)
         {
-            cout << setw(28) << sName[i] << setw(32);
-            cout << grade[i] << setw(24) << sRollNo[i] << endl;
+            cout << setw(28) << Student[i].name << setw(32);
+            cout << Student[i].grade << setw(24) << Student[i].rollNo << endl;
             studentFlag = true;
         }
     }
@@ -882,7 +896,7 @@ void ViewStudentsWithGrade(string sName[], char grade[], int sRollNo[],int sClas
         cout <<"No students to displayed."<<endl;
     }
 }
-void AddStudentsGrade(string sName[], char grade[], int sClass[], int classCheck) // add student grade (teacher)
+void AddStudentsGrade(student Student[], int classCheck) // add student grade (teacher)
 {
     bool studentFlag = false;
     string search;
@@ -892,10 +906,10 @@ void AddStudentsGrade(string sName[], char grade[], int sClass[], int classCheck
     for (int i = 0; i < 10; i++)
     {
 
-        if (sName[i] == search && classCheck == sClass[i])
+        if (Student[i].name == search && classCheck == Student[i].sClass)
         {
-            cout << "Enter Grade of " << sName[i] << " : ";
-            cin >> grade[i];
+            cout << "Enter Grade of " << Student[i].name << " : ";
+            cin >> Student[i].grade;
             cout <<"Student's grade has been given."<<endl;
             studentFlag = true;
             break;
@@ -906,7 +920,7 @@ void AddStudentsGrade(string sName[], char grade[], int sClass[], int classCheck
         cout <<"NO student found."<<endl;
     }
 }
-void ViewGradeByStudent(string sName[], char grade[], int sRollNo[], int rollNoCheck) // view grade (student)
+void ViewGradeByStudent(student Student[], int rollNoCheck) // view grade (student)
 {
     bool studentFlag = false;
     cout << endl;
@@ -915,11 +929,11 @@ void ViewGradeByStudent(string sName[], char grade[], int sRollNo[], int rollNoC
     cout << "*********************************************************************************" << endl;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && sRollNo[i] == rollNoCheck)
+        if (Student[i].name != "nv" && Student[i].rollNo == rollNoCheck)
         {
 
-            cout << setw(28) << sName[i] << setw(32);
-            cout << grade[i] << setw(24) << sRollNo[i] << endl;
+            cout << setw(28) << Student[i].name << setw(32);
+            cout << Student[i].grade << setw(24) << Student[i].rollNo << endl;
             studentFlag = true;
             break;
         }
@@ -930,7 +944,7 @@ void ViewGradeByStudent(string sName[], char grade[], int sRollNo[], int rollNoC
     }
 }
 // save data in files
-void SaveData(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[], string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[],int marks[][5],char grades[]) // save data
+void SaveData(teacher Teacher[], student Student[],int marks[][5]) // save data
 {
     enum courses
     {
@@ -947,27 +961,27 @@ void SaveData(string tName[], string tUserName[], int tClass[], int tAge[], stri
     teacherout.open("teacher.txt");  //save data of teachers
     for (int i = 0; i < 5; i++)
     {
-        if (tName[i] != "nv" && tUserName[i] != "nv" && tClass[i] != -1 && tAge[i] != -1 && tPassword[i] != "nv")
+        if (Teacher[i].name != "nv" && Teacher[i].userName != "nv" && Teacher[i].tClass != -1 && Teacher[i].age != -1 && Teacher[i].Password != "nv")
         {
-            teacherout << tName[i] << "," << tUserName[i]<< "," << tPassword[i] << "," << tClass[i] << "," << tAge[i]  << endl;
+            teacherout << Teacher[i].name << "," << Teacher[i].userName<< "," << Teacher[i].Password << "," << Teacher[i].tClass << "," << Teacher[i].age  << endl;
         }
     }
     teacherout.close();    //save data of students
     studentout.open("student.txt");
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && sUserName[i] != "nv" && sClass[i] != -2 && sRollNo[i] != -1 && sPassword[i] != "nv")
+        if (Student[i].name != "nv" && Student[i].userName != "nv" && Student[i].sClass != -2 && Student[i].rollNo != -1 && Student[i].Password != "nv")
         {
-            studentout << sName[i] <<"," << sUserName[i] <<"," << sPassword[i] << "," << sClass[i] << "," << sRollNo[i]  << endl;
+            studentout << Student[i].name <<"," << Student[i].userName <<"," << Student[i].Password << "," << Student[i].sClass << "," << Student[i].rollNo  << endl;
         }
     }
     studentout.close();
     marksout.open("marks.txt");   //save marks of students
     for(int i=0 ; i < 10 ; i++)
     {
-        if(sName[i] != "nv" && marks[i][0] != 0 && marks[i][1] && marks[i][2] != 0 && marks[i][3] != 0 && marks[i][4] != 0)
+        if(Student[i].name != "nv" && marks[i][0] != 0 && marks[i][1] && marks[i][2] != 0 && marks[i][3] != 0 && marks[i][4] != 0)
         {
-            marksout << grades[i] << "," << marks[i][English] << "," <<marks[i][Urdu]<<","
+            marksout << Student[i].grade << "," << marks[i][English] << "," <<marks[i][Urdu]<<","
                      <<marks[i][Math]<<","<<marks[i][Science]<<","<<marks[i][Islamiyat] <<endl;
                      
         }
@@ -975,7 +989,7 @@ void SaveData(string tName[], string tUserName[], int tClass[], int tAge[], stri
     marksout.close();
 }
 //load data from files
-void loadData(string tName[], string tUserName[], int tClass[], int tAge[], string tPassword[], string sName[], string sUserName[], int sClass[], int sRollNo[], string sPassword[],int marks[][5],char grades[]) // load data
+void loadData(teacher Teacher[],student Student[],int marks[][5]) // load data
 {
     enum courses
     {
@@ -988,31 +1002,31 @@ void loadData(string tName[], string tUserName[], int tClass[], int tAge[], stri
     ifstream studentIn("student.txt"); // load data of students
     for(int i=0 ; i<10 ; i++)
     {
-        getline(studentIn , sName[i] , ',');
-        getline(studentIn , sUserName[i] , ',');
-        getline(studentIn , sPassword[i] , ',');
-        studentIn >> sClass[i];
+        getline(studentIn , Student[i].name , ',');
+        getline(studentIn , Student[i].userName , ',');
+        getline(studentIn , Student[i].Password , ',');
+        studentIn >> Student[i].sClass;
         studentIn.ignore();
-        studentIn >> sRollNo[i];
+        studentIn >> Student[i].rollNo;
         studentIn.ignore();
     }
     studentIn.close();
     ifstream teacherIn("teacher.txt");  // load data of teachers
     for (int i=0;i<5;i++)
     {
-        getline(teacherIn , tName[i] , ',');
-        getline(teacherIn , tUserName[i], ',');
-        getline(teacherIn , tPassword[i] , ',');
-        teacherIn >> tClass[i];
+        getline(teacherIn , Teacher[i].name , ',');
+        getline(teacherIn , Teacher[i].userName, ',');
+        getline(teacherIn , Teacher[i].Password , ',');
+        teacherIn >> Teacher[i].tClass;
         teacherIn.ignore();
-        teacherIn >> tAge[i];
+        teacherIn >> Teacher[i].age;
         teacherIn.ignore();
     }
     teacherIn.close();
     ifstream marksIn("marks.txt");  //load data of student marks 
     for(int i=0;i < 10;i++)
     {
-        marksIn >> grades[i];
+        marksIn >> Student[i].grade;
         marksIn.ignore();
         marksIn >> marks[i][English];
         marksIn.ignore();
@@ -1027,13 +1041,13 @@ void loadData(string tName[], string tUserName[], int tClass[], int tAge[], stri
     }
     marksIn.close();
 }
-int AgeRestriction(int tAge) // age restriction
+int AgeRestriction(int age) // age restriction
 {
     while (true)
     {
-        if (tAge >= 20 && tAge <= 60)
+        if (age >= 20 && age <= 60)
         {
-            return tAge;
+            return age;
         }
         else
         {
@@ -1041,7 +1055,7 @@ int AgeRestriction(int tAge) // age restriction
             cin.clear();
             cin.ignore(100, '\n');
             cout << "Enter Age again : ";
-            cin >> tAge;
+            cin >> age;
         }
     }
 }
@@ -1063,13 +1077,13 @@ int classRestriction(int validCLass) // class Restriction
         }
     }
 }
-int RollNoRestriction(int sRollNo)  // roll no restriction
+int RollNoRestriction(int rollNo)  // roll no restriction
 {
     while (true)
     {
-        if (sRollNo >= 1 && sRollNo <= 35)
+        if (rollNo >= 1 && rollNo <= 35)
         {
-            return sRollNo;
+            return rollNo;
         }
         else
         {
@@ -1077,11 +1091,11 @@ int RollNoRestriction(int sRollNo)  // roll no restriction
             cin.clear();
             cin.ignore(100, '\n');
             cout << "Enter roll no again : ";
-            cin >> sRollNo;
+            cin >> rollNo;
         }
     }
 }
-void ViewMarksByStudent(int marks[][5], string sName[], int sRollNo[], int rollNoCheck) // view marks by student(student)
+void ViewMarksByStudent(student Student[],int marks[][5],int rollNoCheck) // view marks by student(student)
 {
     bool studentFlag = false;
     enum courses
@@ -1099,9 +1113,9 @@ void ViewMarksByStudent(int marks[][5], string sName[], int sRollNo[], int rollN
     cout << "******************************************************************************" << endl;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && sRollNo[i] == rollNoCheck && marks[i][0] != 0)
+        if (Student[i].name != "nv" && Student[i].rollNo == rollNoCheck && marks[i][0] != 0)
         {
-            cout << sName[i] << setw(20) << marks[i][English] << setw(20) << marks[i][Urdu]
+            cout << Student[i].name << setw(20) << marks[i][English] << setw(20) << marks[i][Urdu]
                  << setw(20) << marks[i][Math] << setw(20) << marks[i][Science]
                  << setw(20) << marks[i][Islamiyat] << endl;
                  studentFlag =true;
@@ -1113,7 +1127,7 @@ void ViewMarksByStudent(int marks[][5], string sName[], int sRollNo[], int rollN
         cout <<"No student found."<<endl;
     }
 }
-void AddMarksOfStudent(string sName[], int marks[][5], int sclass[], int classcheck)  //add marks of student (teacher)
+void AddMarksOfStudent(student Student[], int marks[][5], int classcheck)  //add marks of student (teacher)
 {
     bool studentFlag = false;
     string names;
@@ -1131,7 +1145,7 @@ void AddMarksOfStudent(string sName[], int marks[][5], int sclass[], int classch
     for (int i = 0; i < 10; i++)
     {
 
-        if (sName[i] == names && classcheck == sclass[i])
+        if (Student[i].name == names && classcheck == Student[i].sClass)
         {
             cout << "Enter marks of English : ";
             cin >> marks[i][English];
@@ -1153,7 +1167,7 @@ void AddMarksOfStudent(string sName[], int marks[][5], int sclass[], int classch
         cout <<"No student found."<<endl;
     }
 }
-void ViewStudentsWithMarks(string sName[],int marks[][5],int sClass[],int classcheck)   //view student with marks(teacher)
+void ViewStudentsWithMarks(student Student[],int marks[][5],int classcheck)   //view student with marks(teacher)
 {
     bool studentFlag = false;
     enum courses
@@ -1171,9 +1185,9 @@ void ViewStudentsWithMarks(string sName[],int marks[][5],int sClass[],int classc
     cout << "************************************************************************************************" << endl;
     for (int i = 0; i < 10; i++)
     {
-        if (sName[i] != "nv" && classcheck == sClass[i] )
+        if (Student[i].name != "nv" && classcheck == Student[i].sClass )
         {
-            cout << sName[i] << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
+            cout << Student[i].name << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
                  << setw(20) << marks[i][Urdu] << setw(20) << marks[i][Science]
                  << setw(20) << marks[i][Islamiyat] << endl;
                  studentFlag = true;
@@ -1184,7 +1198,7 @@ void ViewStudentsWithMarks(string sName[],int marks[][5],int sClass[],int classc
         cout <<"No students were added to displayed."<<endl;
     }
 }
-void SearchStudentsWithMarks(string sName[],int marks[][5],int sClass[],int sRollNo[],int classcheck)
+void SearchStudentsWithMarks(student Student[],int marks[][5],int classcheck)
 {
     enum courses
     {
@@ -1200,8 +1214,7 @@ void SearchStudentsWithMarks(string sName[],int marks[][5],int sClass[],int sRol
     cout << "You Want to search Student by " << endl;
     cout << endl;
     cout << setw(45) << "1.Student's name " << endl;
-    cout << setw(46) << "2.Student's class " << endl;
-    cout << setw(48) << "3.Student's Roll No " << endl;
+    cout << setw(48) << "2.Student's Roll No " << endl;
     cout << endl;
     cout << "Enter an option : ";
     choose = valid(choose);
@@ -1218,9 +1231,9 @@ void SearchStudentsWithMarks(string sName[],int marks[][5],int sClass[],int sRol
             cout << "************************************************************************************************" << endl;
             for (int i = 0; i < 10; i++)
             {
-                if (sName[i] == search && classcheck == sClass[i] && marks[i][0] != 0)
+                if (Student[i].name == search && classcheck == Student[i].sClass && marks[i][0] != 0)
                 {
-                    cout << sName[i] << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
+                    cout << Student[i].name << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
                     << setw(20) << marks[i][Urdu] << setw(20) << marks[i][Science]
                     << setw(20) << marks[i][Islamiyat] << endl;
                     studentFlag = true;
@@ -1229,28 +1242,6 @@ void SearchStudentsWithMarks(string sName[],int marks[][5],int sClass[],int sRol
             }
         }
         else if (choose == 2)
-        {
-            cout << "Enter Student's Class : ";
-            cin >> searching;
-            searching = classRestriction(searching);
-            cout << endl;
-            cout << "Students" << setw(20) << "English" << setw(20) << "Math"
-                << setw(20) << "Urdu" << setw(20) << "Science"
-                << setw(20) << "Islamiyat" << endl;
-            cout << "************************************************************************************************" << endl;
-            for (int i = 0; i < 10; i++)
-            {
-                if (sName[i] !="nv" && classcheck == sClass[i] && marks[i][0] != 0 && sClass[i] == searching)
-                {
-                    cout << sName[i] << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
-                    << setw(20) << marks[i][Urdu] << setw(20) << marks[i][Science]
-                    << setw(20) << marks[i][Islamiyat] << endl;
-                    studentFlag = true;
-                    break;
-                }
-            }
-        }
-        else if (choose == 3)
         {
             cout << "Enter Student's Roll No : ";
             cin >> searching;
@@ -1262,9 +1253,9 @@ void SearchStudentsWithMarks(string sName[],int marks[][5],int sClass[],int sRol
             cout << "************************************************************************************************" << endl;
             for (int i = 0; i < 10; i++)
             {
-                if (sName[i] != "nv" && classcheck == sClass[i] && marks[i][0] != 0 && sRollNo[i] == searching)
+                if (Student[i].name != "nv" && classcheck == Student[i].sClass && marks[i][0] != 0 && Student[i].rollNo == searching)
                 {
-                    cout << sName[i] << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
+                    cout << Student[i].name << setw(19) << marks[i][English] << setw(20) << marks[i][Math]
                     << setw(20) << marks[i][Urdu] << setw(20) << marks[i][Science]
                     << setw(20) << marks[i][Islamiyat] << endl;
                     studentFlag = true;
